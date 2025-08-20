@@ -70,8 +70,6 @@ export default function PhasePlane() {
     e: "0",
   });
 
-  const seedsRef = useRef<Vec2[]>([]);
-
   const isNumeric = (s: string) => {
     if (s.trim() === "") return false;
     const n = Number(s);
@@ -156,10 +154,11 @@ export default function PhasePlane() {
       const fFast = (x: number, y: number) => fJS(x, y, t, a, b, c, d, e);
       const gFast = (x: number, y: number) => gJS(x, y, t, a, b, c, d, e);
 
-      const f: System["f"] = ((x: number, y: number) => fFast(x, y)) as any;
-      const g: System["g"] = ((x: number, y: number) => gFast(x, y)) as any;
-
-      return { f, g, params };
+      return {
+        f: fFast as any,
+        g: gFast as any,
+        params: params,
+      };
     },
     [parser]
   );
@@ -289,23 +288,8 @@ export default function PhasePlane() {
     renderMainLayer();
   }, [renderMainLayer]);
 
-  useEffect(() => {
-    drawTrajectoriesOnly();
-  }, [fxText, gyText, drawTrajectoriesOnly]);
-
-  const clientToWorld = useCallback(
-    (clientX: number, clientY: number): Vec2 => {
-      const canvas = mainCanvasRef.current!;
-      const rect = canvas.getBoundingClientRect();
-      const px = clientX - rect.left;
-      const py = clientY - rect.top;
-      return transform.toWorld(rect.width, rect.height, { x: px, y: py });
-    },
-    [transform]
-  );
-
   const integrateAndDrawSeed = useCallback(
-    (seed: Vec2, remember: boolean) => {
+    (seed: Vec2) => {
       const bounds = integrationBoundsFor(transform, seed, 3);
       const { forward, backward } = integrateBidirectional(
         system,
@@ -326,25 +310,24 @@ export default function PhasePlane() {
         { seed, forward, backward },
         ...trajectoriesRef.current,
       ].slice(0, 1000);
-
-      if (remember) {
-        const eps = 1e-12;
-        if (
-          !seedsRef.current.some(
-            (s) => Math.abs(s.x - seed.x) < eps && Math.abs(s.y - seed.y) < eps
-          )
-        ) {
-          seedsRef.current.unshift(seed);
-          seedsRef.current = seedsRef.current.slice(0, 5000);
-        }
-      }
     },
     [ensureCanvasSize, system, transform]
   );
 
+  const clientToWorld = useCallback(
+    (clientX: number, clientY: number): Vec2 => {
+      const canvas = mainCanvasRef.current!;
+      const rect = canvas.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+      return transform.toWorld(rect.width, rect.height, { x: px, y: py });
+    },
+    [transform]
+  );
+
   const addSeedWorld = useCallback(
     (seed: Vec2) => {
-      integrateAndDrawSeed(seed, true);
+      integrateAndDrawSeed(seed);
     },
     [integrateAndDrawSeed]
   );
@@ -367,17 +350,6 @@ export default function PhasePlane() {
 
       renderVectorFieldLayer();
       drawTrajectoriesOnly();
-
-      const tick = () =>
-        new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-
-      (async () => {
-        for (const seed of seedsRef.current) {
-          integrateAndDrawSeed(seed, false);
-          await tick();
-        }
-        renderMainLayer();
-      })();
     }, 150);
     return () => window.clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
