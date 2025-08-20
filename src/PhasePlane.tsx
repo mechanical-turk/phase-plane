@@ -595,6 +595,14 @@ export default function PhasePlane() {
         <aside className="w-60 shrink-0 rounded-2xl border shadow p-4 flex flex-col gap-4">
           <div>
             <div className="text-sm font-semibold">Phase Plane Plotter</div>
+            <a
+              href="https://github.com/mechanical-turk/phase-plane"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              View on GitHub →
+            </a>
           </div>
 
           <div className="flex flex-col gap-3">
