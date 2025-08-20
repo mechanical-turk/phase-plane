@@ -101,7 +101,6 @@ export default function PhasePlane() {
           logical: true,
           comparison: true,
           conditional: false,
-          array: false,
         },
       }),
     []
@@ -183,7 +182,7 @@ export default function PhasePlane() {
   const last = useRef<Vec2>({ x: 0, y: 0 });
 
   const ensureCanvasSize = useCallback(
-    (ref: React.RefObject<HTMLCanvasElement>) => {
+    (ref: React.RefObject<HTMLCanvasElement | null>) => {
       const canvas = ref.current;
       if (!canvas)
         return { w: 0, h: 0, ctx: null as CanvasRenderingContext2D | null };
