@@ -1,69 +1,40 @@
-# React + TypeScript + Vite
+# Phase Plane Plotter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive web application for visualizing phase plane diagrams of differential equations.
 
-Currently, two official plugins are available:
+## Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[Live Demo](https://mechanical-turk.github.io/phase-plane/)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Real-time Phase Plane Plotting**: Visualize 2D autonomous differential equation systems
+- **Interactive Trajectories**: Click to add trajectories, drag to pan, scroll to zoom
+- **Customizable Equations**: Input your own differential equations using variables x, y, t, a, b, c, d, e
+- **Vector Field Visualization**: See the direction and magnitude of the system at each point
+- **Nullclines**: Display curves where x' = 0 and y' = 0
+- **Equilibrium Points**: Automatically detect and mark stable/unstable equilibria
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Usage
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. Enter differential equations for x' and y' in the input fields
+2. Adjust parameters a, b, c, d, e as needed
+3. Click on the phase plane to add trajectories
+4. Use checkboxes to toggle vector field, grid, nullclines, and equilibria
+5. Pan by dragging, zoom with mouse wheel
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Example Equations
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Lotka-Volterra (Predator-Prey):**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- x' = a*x - b*x\*y
+- y' = -c*y + d*x\*y
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+![Lotka-Volterra Phase Plane](public/lotka-volterra.png)
+
+**Van der Pol Oscillator:**
+
+- x' = y
+- y' = -x + a*(1 - x^2)*y
+
+![Van der Pol Oscillator](public/van-der-pol.png)
